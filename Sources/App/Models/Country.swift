@@ -123,9 +123,7 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
           let name = touple.0
           
           return try Country<D>.query(on: connection)
-//            .filter(\.continentID == continentID)
             .filter(\Country.continentID, .equals, .data(continentID))
-//            .filter(\.name == name)
             .filter(\Country.name, .equals, .data(name))
             .delete()
         }
