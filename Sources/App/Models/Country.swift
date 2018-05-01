@@ -46,6 +46,8 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
   
   typealias Database = D
   
+  //MARK: - Create Fields, Indexes and relations
+  
   static func prepareFields(on connection: Database.Connection) -> Future<Void> {
     return Database.create(Country<Database>.self, on: connection) { builder in
       
@@ -66,28 +68,18 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
     }
   }
   
-  static func prepare(on connection: Database.Connection) -> Future<Void> {
-    
-    let futureCreateFields = prepareFields(on: connection)
-    
-    let allFutures : [EventLoopFuture<Void>] = [futureCreateFields]
-    
-    return Future<Void>.andAll(allFutures, eventLoop: connection.eventLoop)
-  }
-  
   //MARK: - Helpers
   
   static func getContinentID(on connection: Database.Connection, continentAlpha2: String) -> Future<Continent<Database>.ID> {
     do {
-
-      return try Continent.query(on: connection)
-        .filter(\Continent.alpha2 == continentAlpha2)
+      return try Continent<D>.query(on: connection)
+        .filter(\Continent.alpha2, .equals, .data(continentAlpha2))
         .first()
-        .map(to: Continent.ID.self) { continent in
+        .map(to: Continent<Database>.ID.self) { continent in
           guard let continent = continent else {
             throw FluentError(
               identifier: "PopulateCountries_noSuchContinent",
-              reason: "No continent named \(continentAlpha2) exists!",
+              reason: "No continent (with alpha2) \(continentAlpha2) exists!",
               source: .capture()
             )
           }
@@ -99,8 +91,73 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
     }
   }
   
+  static func addCountries(on connection: Database.Connection, toContinentWithAlpha2 continentAlpha2: String, countries: [(name:String, numeric: String, alpha2:String, alpha3: String, calling:String, currency: String, continent:String)]) -> Future<Void> {
+    
+    return getContinentID(on: connection, continentAlpha2: continentAlpha2)
+      .flatMap(to: Void.self) { continentID in
+        
+        let futures = countries.map { touple -> EventLoopFuture<Void> in
+          let name = touple.0
+          let numeric = touple.1
+          let alpha2 = touple.2
+          let alpha3 = touple.3
+          let calling = touple.4
+          let currency = touple.5
+          
+          return Country<Database>(name: name, numeric: numeric, alpha2: alpha2, alpha3: alpha3, calling: calling, currency: currency, continentID:continentID )
+            .create(on: connection)
+            .map(to: Void.self) { _ in return }
+        }
+        
+        return Future<Void>.andAll(futures, eventLoop: connection.eventLoop)
+    }
+  }
+  
+  static func deleteCountries(on connection: Database.Connection, forContinentWithAlpha2 continentAlpha2: String, countries: [(name:String, numeric: String, alpha2:String, alpha3: String, calling:String, currency: String, continent:String)]) -> Future<Void> {
+    
+    return getContinentID(on: connection, continentAlpha2: continentAlpha2)
+      .flatMap(to: Void.self) { continentID in
+        
+        let futures = try countries.map { touple -> EventLoopFuture<Void> in
+          
+          let name = touple.0
+          
+          return try Country<D>.query(on: connection)
+//            .filter(\.continentID == continentID)
+            .filter(\Country.continentID, .equals, .data(continentID))
+//            .filter(\.name == name)
+            .filter(\Country.name, .equals, .data(name))
+            .delete()
+        }
+        return Future<Void>.andAll(futures, eventLoop: connection.eventLoop)
+    }
+  }
+  
+  static func prepareAddCountries(on connection: Database.Connection) -> Future<Void> {
+    
+    let futures = countries.map { continentAlpha2, countryTouples in
+      return addCountries(on: connection, toContinentWithAlpha2: continentAlpha2, countries: countryTouples)
+    }
+    return Future<Void>.andAll(futures, eventLoop: connection.eventLoop)
+  }
+  
+  //MARK: - Required
+  
+  static func prepare(on connection: Database.Connection) -> Future<Void> {
+    
+    let futureCreateFields = prepareFields(on: connection)
+//    let futureInsertData = addCountries(on: connection)
+    
+    let allFutures : [EventLoopFuture<Void>] = [futureCreateFields]
+    
+    return Future<Void>.andAll(allFutures, eventLoop: connection.eventLoop)
+  }
+  
   static func revert(on connection: D.Connection) -> EventLoopFuture<Void> {
-    return connection.eventLoop.newFailedFuture(error: error)
+    let futures = countries.map { continentAlpha2, countryTouples in
+      return deleteCountries(on: connection, forContinentWithAlpha2: continentAlpha2, countries: countryTouples)
+    }
+    return Future<Void>.andAll(futures, eventLoop: connection.eventLoop)
   }
 
 }
