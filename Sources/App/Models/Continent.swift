@@ -29,7 +29,7 @@ public final class Continent<D>: Model where D: QuerySupporting, D: IndexSupport
   }
 }
 
-extension Continent: Migration where D: SchemaSupporting, D: QuerySupporting, D: IndexSupporting { }
+extension Continent: Migration where D: QuerySupporting, D: IndexSupporting { }
 
 //MARK: - Populating data
 

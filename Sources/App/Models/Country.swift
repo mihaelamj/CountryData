@@ -11,11 +11,11 @@ public final class Country<D>: Model where D: QuerySupporting, D: IndexSupportin
   public static var idKey: IDKey { return \.id }
   
   public static var entity: String {
-    return "testModel"
+    return "country"
   }
   
   public static var database: DatabaseIdentifier<D> {
-    return .init("test")
+    return .init("countries")
   }
   
   var id: Int?
@@ -37,3 +37,71 @@ public final class Country<D>: Model where D: QuerySupporting, D: IndexSupportin
     self.continentID = continentID
   }
 }
+
+extension Country: Migration where D: QuerySupporting, D: IndexSupporting { }
+
+//MARK: - Populating data
+
+internal struct CountryMigration<D>: Migration where D: QuerySupporting & SchemaSupporting & IndexSupporting {
+  
+  typealias Database = D
+  
+  static func prepareFields(on connection: Database.Connection) -> Future<Void> {
+    return Database.create(Country<Database>.self, on: connection) { builder in
+      
+      //add fields
+      try builder.field(for: \Country<Database>.id)
+      try builder.field(for: \Country<Database>.name)
+      try builder.field(for: \Country<Database>.numeric)
+      try builder.field(for: \Country<Database>.alpha2)
+      try builder.field(for: \Country<Database>.alpha3)
+      try builder.field(for: \Country<Database>.calling)
+      try builder.field(for: \Country<Database>.currency)
+      try builder.field(for: \Country<Database>.continentID)
+      
+      //indexes
+      try builder.addIndex(to: \.name, isUnique: true)
+      try builder.addIndex(to: \.alpha2, isUnique: true)
+      try builder.addIndex(to: \.alpha3, isUnique: true)
+    }
+  }
+  
+  static func prepare(on connection: Database.Connection) -> Future<Void> {
+    
+    let futureCreateFields = prepareFields(on: connection)
+    
+    let allFutures : [EventLoopFuture<Void>] = [futureCreateFields]
+    
+    return Future<Void>.andAll(allFutures, eventLoop: connection.eventLoop)
+  }
+  
+  //MARK: - Helpers
+  
+  static func getContinentID(on connection: Database.Connection, continentAlpha2: String) -> Future<Continent<Database>.ID> {
+    do {
+
+      return try Continent.query(on: connection)
+        .filter(\Continent.alpha2 == continentAlpha2)
+        .first()
+        .map(to: Continent.ID.self) { continent in
+          guard let continent = continent else {
+            throw FluentError(
+              identifier: "PopulateCountries_noSuchContinent",
+              reason: "No continent named \(continentAlpha2) exists!",
+              source: .capture()
+            )
+          }
+          return continent.id!
+      }
+    }
+    catch {
+      return connection.eventLoop.newFailedFuture(error: error)
+    }
+  }
+  
+  static func revert(on connection: D.Connection) -> EventLoopFuture<Void> {
+    return connection.eventLoop.newFailedFuture(error: error)
+  }
+
+}
+
