@@ -42,8 +42,8 @@ public func configurePostgreSQL(
   
   //Generic Test Migration
   
-//  migrations.add(model: User<PostgreSQLDatabase>.self, database: .psql)
   migrations.add(migration: ContinentMigration<PostgreSQLDatabase>.self, database: .psql)
+  migrations.add(migration: CountryMigration<PostgreSQLDatabase>.self, database: .psql)
   
   services.register(migrations)
   

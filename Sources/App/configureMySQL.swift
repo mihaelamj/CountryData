@@ -42,9 +42,8 @@ public func configureMySQL(
   /// Configure migrations
   var migrations = MigrationConfig()
   
-  //Generic Test Migration
-  
   migrations.add(migration: ContinentMigration<MySQLDatabase>.self, database: .mysql)
+  migrations.add(migration: CountryMigration<MySQLDatabase>.self, database: .mysql)
   
   services.register(migrations)
   
