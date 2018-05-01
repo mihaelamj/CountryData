@@ -2,11 +2,10 @@ import Async
 import Fluent
 import Foundation
 
-public final class Country<D>: Model where D: QuerySupporting {
+public final class Country<D>: Model where D: QuerySupporting, D: IndexSupporting {
   
   public typealias Database = D
   
-  //  public typealias ID = UUID
   public typealias ID = Int
   
   public static var idKey: IDKey { return \.id }
@@ -19,15 +18,22 @@ public final class Country<D>: Model where D: QuerySupporting {
     return .init("test")
   }
   
-  //  var id: UUID? //How can I make id an Int?
   var id: Int?
-  
   var name: String
+  var numeric: String
+  var alpha2: String
+  var alpha3: String
+  var calling: String
+  var currency: String
+  var continentID: Continent<Database>.ID
   
-  var num : Int
-  
-  init(name: String, num: Int) {
+  init(name : String, numeric: String, alpha2: String, alpha3: String, calling: String, currency: String, continentID: Continent<Database>.ID) {
     self.name = name
-    self.num = num
+    self.numeric = numeric
+    self.alpha2 = alpha2
+    self.alpha3 = alpha3
+    self.calling = calling
+    self.currency = currency
+    self.continentID = continentID
   }
 }
