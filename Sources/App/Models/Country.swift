@@ -2,6 +2,8 @@ import Async
 import Fluent
 import Foundation
 
+//TODO: add parent property (continent)
+
 public final class Country<D>: Model where D: QuerySupporting, D: IndexSupporting {
   
   public typealias Database = D
@@ -38,15 +40,15 @@ public final class Country<D>: Model where D: QuerySupporting, D: IndexSupportin
   }
 }
 
-extension Country: Migration where D: QuerySupporting, D: IndexSupporting { }
+extension Country: Migration where D: QuerySupporting, D: IndexSupporting, D: ReferenceSupporting { }
 
 //MARK: - Populating data
 
-internal struct CountryMigration<D>: Migration where D: QuerySupporting & SchemaSupporting & IndexSupporting {
+internal struct CountryMigration<D>: Migration where D: QuerySupporting & SchemaSupporting & IndexSupporting & ReferenceSupporting {
   
   typealias Database = D
   
-  //MARK: - Create Fields, Indexes and relations
+//MARK: - Create Fields, Indexes and relations
   
   static func prepareFields(on connection: Database.Connection) -> Future<Void> {
     return Database.create(Country<Database>.self, on: connection) { builder in
@@ -65,6 +67,9 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
       try builder.addIndex(to: \.name, isUnique: true)
       try builder.addIndex(to: \.alpha2, isUnique: true)
       try builder.addIndex(to: \.alpha3, isUnique: true)
+      
+      //referential integrity - foreign key to parent
+      try builder.addReference(from: \Country<D>.continentID, to: \Continent<D>.id, actions: .init(update: .update, delete: .nullify))
     }
   }
   
@@ -132,7 +137,6 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
   }
   
   static func prepareAddCountries(on connection: Database.Connection) -> Future<Void> {
-    
     let futures = countries.map { continentAlpha2, countryTouples in
       return addCountries(on: connection, toContinentWithAlpha2: continentAlpha2, countries: countryTouples)
     }
@@ -142,11 +146,10 @@ internal struct CountryMigration<D>: Migration where D: QuerySupporting & Schema
   //MARK: - Required
   
   static func prepare(on connection: Database.Connection) -> Future<Void> {
-    
     let futureCreateFields = prepareFields(on: connection)
-//    let futureInsertData = addCountries(on: connection)
+    let futureInsertData = prepareAddCountries(on: connection)
     
-    let allFutures : [EventLoopFuture<Void>] = [futureCreateFields]
+    let allFutures : [EventLoopFuture<Void>] = [futureCreateFields, futureInsertData]
     
     return Future<Void>.andAll(allFutures, eventLoop: connection.eventLoop)
   }

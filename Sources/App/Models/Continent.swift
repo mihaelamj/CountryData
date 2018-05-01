@@ -1,3 +1,6 @@
+//TODO: add children property (countries)
+//TODO: SQLite : enableReferences
+
 #if Xcode
 import Async
 import Fluent
@@ -93,8 +96,5 @@ internal struct ContinentMigration<D>: Migration where D: QuerySupporting & Sche
     }
   }
   
-  //SQLite : enableReferences
-  
 }
-
 #endif
