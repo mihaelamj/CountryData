@@ -42,6 +42,15 @@ public final class Country<D>: Model where D: QuerySupporting, D: IndexSupportin
 
 extension Country: Migration where D: QuerySupporting, D: IndexSupporting, D: ReferenceSupporting { }
 
+// MARK: Relations
+
+extension Country {
+  /// A relation to this country's continent.
+  var owner: Parent<Country, Continent<Database>>? {
+    return parent(\.continentID)
+  }
+}
+
 //MARK: - Populating data
 
 internal struct CountryMigration<D>: Migration where D: QuerySupporting & SchemaSupporting & IndexSupporting & ReferenceSupporting {

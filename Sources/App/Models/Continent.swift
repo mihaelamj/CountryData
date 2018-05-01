@@ -9,15 +9,11 @@ import Foundation
 public final class Continent<D>: Model where D: QuerySupporting, D: IndexSupporting {
   
   public typealias Database = D
-  
   public typealias ID = Int
-  
   public static var idKey: IDKey { return \.id }
-  
   public static var entity: String {
     return "continent"
   }
-  
   public static var database: DatabaseIdentifier<D> {
     return .init("continent")
   }
@@ -33,6 +29,13 @@ public final class Continent<D>: Model where D: QuerySupporting, D: IndexSupport
 }
 
 extension Continent: Migration where D: QuerySupporting, D: IndexSupporting { }
+
+//Continent ↤⇉ Country
+extension Continent {
+  var countries: Children<Continent, Country<Database>> {
+    return children(\.continentID)
+  }
+}
 
 //MARK: - Populating data
 
@@ -95,6 +98,5 @@ internal struct ContinentMigration<D>: Migration where D: QuerySupporting & Sche
       return connection.eventLoop.newFailedFuture(error: error)
     }
   }
-  
 }
 #endif
