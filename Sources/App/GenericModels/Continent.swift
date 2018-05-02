@@ -12,7 +12,7 @@ public final class Continent<D>: Model where D: QuerySupporting, D: IndexSupport
     return "continent"
   }
   public static var database: DatabaseIdentifier<D> {
-    return .init("continent")
+    return .init("continents")
   }
   
   var id: Int?

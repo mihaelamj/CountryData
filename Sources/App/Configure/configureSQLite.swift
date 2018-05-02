@@ -48,6 +48,9 @@ public func configureSQLite(
   var migrations = MigrationConfig()
   
   //test SQLite
+  Continent<SQLiteDatabase>.defaultDatabase = .sqlite
+  Country<SQLiteDatabase>.defaultDatabase = .sqlite
+  
   migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
   

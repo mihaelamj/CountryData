@@ -1,16 +1,16 @@
-import FluentPostgreSQL
+import FluentMySQL
 import Vapor
 
 /// Called before your application initializes.
 ///
 /// https://docs.vapor.codes/3.0/getting-started/structure/#configureswift
-public func configurePostgreSQL(
+public func configureMySQL(
   _ config: inout Config,
   _ env: inout Environment,
   _ services: inout Services
   ) throws {
   /// Register providers first
-  try services.register(FluentPostgreSQLProvider())
+  try services.register(FluentMySQLProvider())
   
   /// Register routes to the router
   let router = EngineRouter.default()
@@ -25,12 +25,14 @@ public func configurePostgreSQL(
   services.register(middlewares)
   
   // Configure a database
-  let psqlConfig = PostgreSQLDatabaseConfig(hostname: "localhost", port: 5432, username: "vapor", password: "password")
-  var dbConfig = DatabaseConfig()
-  
-  let database = PostgreSQLDatabase(config: psqlConfig)
-  dbConfig.add(database: database, as: .psql)
-  services.register(dbConfig)
+  let mysqlConfig = MySQLDatabaseConfig(
+    hostname: Environment.get("MYSQL_HOSTNAME") ?? "127.0.0.1",
+    username: Environment.get("MYSQL_USER") ?? "mentor",
+    password: Environment.get("MYSQL_PASSWORD") ?? "changeme",
+    database: Environment.get("MYSQL_DATABASE") ?? "mentor"
+  )
+
+  services.register(mysqlConfig)
   
   //Adds Fluent’s commands to the CommandConfig. Currently only the RevertCommand at "revert".
   var commandConfig = CommandConfig.default()
@@ -40,12 +42,14 @@ public func configurePostgreSQL(
   /// Configure migrations
   var migrations = MigrationConfig()
   
-  //Generic Test Migration
+  Continent<MySQLDatabase>.defaultDatabase = .mysql
+  Country<MySQLDatabase>.defaultDatabase = .mysql
   
-  migrations.add(migration: ContinentMigration<PostgreSQLDatabase>.self, database: .psql)
-  migrations.add(migration: CountryMigration<PostgreSQLDatabase>.self, database: .psql)
+  migrations.add(migration: ContinentMigration<MySQLDatabase>.self, database: .mysql)
+  migrations.add(migration: CountryMigration<MySQLDatabase>.self, database: .mysql)
   
   services.register(migrations)
   
 }
+
 
