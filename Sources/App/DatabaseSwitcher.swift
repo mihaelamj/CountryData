@@ -1,9 +1,9 @@
 import Foundation
 import Fluent
 
-import FluentSQLite
-public typealias CountrySQLite = Country<SQLiteDatabase>
-public typealias ContinentSQLite = Continent<SQLiteDatabase>
+//import FluentSQLite
+//public typealias CountrySQLite = Country<SQLiteDatabase>
+//public typealias ContinentSQLite = Continent<SQLiteDatabase>
 
 //import FluentMySQL
 //public typealias CountrySQLite = Country<MySQLDatabase>

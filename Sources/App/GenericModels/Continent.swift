@@ -96,4 +96,17 @@ public struct ContinentMigration<D>: Migration where D: QuerySupporting & Schema
     }
   }
 }
+#else
+//for use in iOS project
+final class Continent : Codable {
+  var id : Int?
+  var name : String
+  var alpha2: String
+  
+  init(name : String, alpha2: String) {
+    self.name = name
+    self.alpha2 = alpha2
+  }
+}
+
 #endif
