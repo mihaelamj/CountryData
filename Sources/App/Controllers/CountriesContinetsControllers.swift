@@ -116,10 +116,6 @@ struct CountriesController: RouteCollection {
     return try CountrySQLite.query(on: req).paginate(on: req).all()
   }
   
-//  func getAllPaginatedHandler(_ req: Request) throws -> Future<Paginated<[CountrySQLite]>> {
-////    return CountrySQLite.query(on: req).filt
-//    return try CountrySQLite.query(on: req).paginate(for: req)
-//  }
   
   func getOneHandler(_ req: Request) throws -> Future<CountrySQLite> {
     return try req.parameters.next(Country.self)
@@ -139,10 +135,10 @@ struct ContinentsController: RouteCollection {
     let aRoute = router.grouped("api", "continets")
     
     //GET /api/continets
-    aRoute.get(use: getAllHandler)
+    aRoute.get(use: getAlPaginatedlHandler)
     
     //GET /api/continents/:continentID
-    aRoute.get(ContinentSQLite.parameter, use: getOne)
+    aRoute.get(ContinentSQLite.parameter, use: getOneHandler)
     
     //GET /api/continents/:continentID/countries
     aRoute.get(ContinentSQLite.parameter, "countries", use: getCountriesHandler)
@@ -152,13 +148,17 @@ struct ContinentsController: RouteCollection {
     return Continent.query(on: req).all()
   }
   
-  func getOne(_ req: Request) throws -> Future<ContinentSQLite> {
+  func getAlPaginatedlHandler(_ req: Request) throws -> Future<[ContinentSQLite]> {
+    return try Continent.query(on: req).paginate(on: req).all()
+  }
+  
+  func getOneHandler(_ req: Request) throws -> Future<ContinentSQLite> {
     return try req.parameters.next(Continent.self)
   }
   
   func getCountriesHandler(_ req: Request) throws -> Future<[CountrySQLite]> {
     return try req.parameters.next(ContinentSQLite.self).flatMap(to: [CountrySQLite].self) { continent in
-      return try continent.countries.query(on: req).all()
+      return try continent.countries.query(on: req).paginate(on: req).all()
     }
   }
   
