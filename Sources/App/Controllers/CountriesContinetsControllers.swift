@@ -23,81 +23,13 @@ extension Country : Content{}
 extension Continent : Parameter{}
 extension Continent : Content{}
 
-//extension Country where Database == SQLiteDatabase : Paginatable {
-//
-//}
-//public protocol Paginatable: Model where Self.Database: QuerySupporting {
-//public final class Country<D>: Model where D: QuerySupporting, D: IndexSupporting {
-
-//Constrained extension must be declared on the unspecialized generic type 'Country' with constraints specified by a 'where' clause
-//extension Country where  Model: Paginatable {
-//  
-//  public static var defaultPageSize: Int {
-//    return 20
-//  }
-//  
-//  public static var defaultPageSorts: [QuerySort] {
-//    return [
-//      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
-//    ]
-//  }
-//  
-//  public static var defaultPageGroups: [QueryGroupBy] {
-//    return [
-//      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
-//    ]
-//  }
-//  
-//}
-//Constrained extension must be declared on the unspecialized generic type
-//'Country' with constraints specified by a 'where' clause
-//extension CountrySQLite where T: Paginatable {
-//  public static var defaultPageSize: Int {
-//    return 20
-//  }
-//
-//  public static var defaultPageSorts: [QuerySort] {
-//    return [
-//      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
-//    ]
-//  }
-//
-//  public static var defaultPageGroups: [QueryGroupBy] {
-//    return [
-//      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
-//    ]
-//  }
-//}
-//extension Continent : Paginatable {
-//  public static var defaultPageSize: Int {
-//    return 20
-//  }
-//
-//  public static var defaultPageSorts: [QuerySort] {
-//    return [
-//      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
-//    ]
-//  }
-//
-//  public static var defaultPageGroups: [QueryGroupBy] {
-//    return [
-//      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
-//    ]
-//  }
-//}
-
-
 struct CountriesController: RouteCollection {
   
   func boot(router: Router) throws {
     let aRoute = router.grouped("api", "countries")
     
     //GET /api/countries
-//    aRoute.get(use: getAllHandler)
     aRoute.get(use: getAllPaginatedHandler)
-    
-    //GET /api/countries/paginated
-    aRoute.get("paginated", use: getAllPaginatedHandler)
     
     //GET /api/countries/:ID
     aRoute.get(CountrySQLite.parameter as PathComponentsRepresentable, use: getOneHandler)
@@ -110,7 +42,6 @@ struct CountriesController: RouteCollection {
     return CountrySQLite.query(on: req).all()
   }
   
-  //return try team.users.query(on: req).paginate(on: req).all()
   //GET http://localhost:8080/api/countries?limit=20&page=1
   func getAllPaginatedHandler(_ req: Request) throws -> Future<[CountrySQLite]> {
     return try CountrySQLite.query(on: req).paginate(on: req).all()
