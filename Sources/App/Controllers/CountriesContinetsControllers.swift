@@ -1,5 +1,5 @@
 import Vapor
-import Pagination
+//import Pagination
 
 //Choose you DB provider
 
@@ -23,40 +23,68 @@ extension Country : Content{}
 extension Continent : Parameter{}
 extension Continent : Content{}
 
-extension Country : Paginatable {
-  public static var defaultPageSize: Int {
-    return 20
-  }
-  
-  public static var defaultPageSorts: [QuerySort] {
-    return [
-      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
-    ]
-  }
-  
-  public static var defaultPageGroups: [QueryGroupBy] {
-    return [
-      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
-    ]
-  }
-}
-extension Continent : Paginatable{
-  public static var defaultPageSize: Int {
-    return 20
-  }
-  
-  public static var defaultPageSorts: [QuerySort] {
-    return [
-      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
-    ]
-  }
-  
-  public static var defaultPageGroups: [QueryGroupBy] {
-    return [
-      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
-    ]
-  }
-}
+//extension Country where Database == SQLiteDatabase : Paginatable {
+//
+//}
+//public protocol Paginatable: Model where Self.Database: QuerySupporting {
+//public final class Country<D>: Model where D: QuerySupporting, D: IndexSupporting {
+
+//Constrained extension must be declared on the unspecialized generic type 'Country' with constraints specified by a 'where' clause
+//extension Country where  Model: Paginatable {
+//  
+//  public static var defaultPageSize: Int {
+//    return 20
+//  }
+//  
+//  public static var defaultPageSorts: [QuerySort] {
+//    return [
+//      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
+//    ]
+//  }
+//  
+//  public static var defaultPageGroups: [QueryGroupBy] {
+//    return [
+//      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
+//    ]
+//  }
+//  
+//}
+//Constrained extension must be declared on the unspecialized generic type
+//'Country' with constraints specified by a 'where' clause
+//extension CountrySQLite where T: Paginatable {
+//  public static var defaultPageSize: Int {
+//    return 20
+//  }
+//
+//  public static var defaultPageSorts: [QuerySort] {
+//    return [
+//      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
+//    ]
+//  }
+//
+//  public static var defaultPageGroups: [QueryGroupBy] {
+//    return [
+//      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
+//    ]
+//  }
+//}
+//extension Continent : Paginatable {
+//  public static var defaultPageSize: Int {
+//    return 20
+//  }
+//
+//  public static var defaultPageSorts: [QuerySort] {
+//    return [
+//      QuerySort(field: QueryField(entity: self.entity, name: "name"), direction: .descending)
+//    ]
+//  }
+//
+//  public static var defaultPageGroups: [QueryGroupBy] {
+//    return [
+//      QueryGroupBy.field(QueryField(entity: self.entity, name: "name"))
+//    ]
+//  }
+//}
 
 
 struct CountriesController: RouteCollection {
@@ -65,7 +93,11 @@ struct CountriesController: RouteCollection {
     let aRoute = router.grouped("api", "countries")
     
     //GET /api/countries
-    aRoute.get(use: getAllHandler)
+//    aRoute.get(use: getAllHandler)
+    aRoute.get(use: getAllPaginatedHandler)
+    
+    //GET /api/countries/paginated
+    aRoute.get("paginated", use: getAllPaginatedHandler)
     
     //GET /api/countries/:ID
     aRoute.get(CountrySQLite.parameter as PathComponentsRepresentable, use: getOneHandler)
@@ -74,9 +106,20 @@ struct CountriesController: RouteCollection {
     aRoute.get(CountrySQLite.parameter as PathComponentsRepresentable, "continent", use: getContinentHandler)
   }
   
-  func getAllHandler(_ req: Request) throws -> Future<[Country<SQLiteDatabase>]> {
+  func getAllHandler(_ req: Request) throws -> Future<[CountrySQLite]> {
     return CountrySQLite.query(on: req).all()
   }
+  
+  //return try team.users.query(on: req).paginate(on: req).all()
+  //GET http://localhost:8080/api/countries?limit=20&page=1
+  func getAllPaginatedHandler(_ req: Request) throws -> Future<[CountrySQLite]> {
+    return try CountrySQLite.query(on: req).paginate(on: req).all()
+  }
+  
+//  func getAllPaginatedHandler(_ req: Request) throws -> Future<Paginated<[CountrySQLite]>> {
+////    return CountrySQLite.query(on: req).filt
+//    return try CountrySQLite.query(on: req).paginate(for: req)
+//  }
   
   func getOneHandler(_ req: Request) throws -> Future<CountrySQLite> {
     return try req.parameters.next(Country.self)
