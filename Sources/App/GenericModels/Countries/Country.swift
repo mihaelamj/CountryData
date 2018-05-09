@@ -43,7 +43,7 @@ public final class Country<D>: Model where D: QuerySupporting, D: IndexSupportin
 
 extension Country: Migration where D: QuerySupporting, D: IndexSupporting, D: ReferenceSupporting { }
 
-// MARK: Relations
+// MARK: - Relations
 
 ////Country ⇇↦  Continent
 extension Country {

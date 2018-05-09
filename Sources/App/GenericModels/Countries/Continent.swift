@@ -27,6 +27,8 @@ public final class Continent<D>: Model where D: QuerySupporting, D: IndexSupport
 
 extension Continent: Migration where D: QuerySupporting, D: IndexSupporting { }
 
+// MARK: - Relations
+
 //Continent ↤⇉ Country
 extension Continent {
   var countries: Children<Continent, Country<Database>> {

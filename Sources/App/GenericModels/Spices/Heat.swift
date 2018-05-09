@@ -32,6 +32,16 @@ public final class Heat<D>: Model where D: QuerySupporting, D: IndexSupporting {
 //Conform to Migration
 extension Heat: Migration where D: QuerySupporting, D: IndexSupporting { }
 
+
+// MARK: - Relations
+
+//Heat ↤⇉ Technique
+extension Heat {
+  var techniques: Children<Heat, Technique<Database>> {
+    return children(\.heatID)
+  }
+}
+
 //MARK: - Populating data
 
 let heatNames = [
