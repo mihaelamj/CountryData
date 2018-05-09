@@ -53,12 +53,20 @@ public func configureSQLite(
   
   Form<SQLiteDatabase>.defaultDatabase = .sqlite
   Heat<SQLiteDatabase>.defaultDatabase = .sqlite
+  Season<SQLiteDatabase>.defaultDatabase = .sqlite
+  Volume<SQLiteDatabase>.defaultDatabase = .sqlite
+  Weight<SQLiteDatabase>.defaultDatabase = .sqlite
+  Type<SQLiteDatabase>.defaultDatabase = .sqlite
   
   migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
   
   migrations.add(migration: FormMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: HeatMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: SeasonMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: VolumeMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: WeightMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: TypeMigration<SQLiteDatabase>.self, database: .sqlite)
   
   services.register(migrations)
   
