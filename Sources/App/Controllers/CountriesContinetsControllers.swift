@@ -18,8 +18,8 @@ public typealias ContinentSQLite = Continent<SQLiteDatabase>
 
 
 //protocol conformances
-extension Country : Parameter{}
-extension Country : Content{}
+//extension Country : Parameter{}
+//extension Country : Content{}
 //extension Continent : Parameter{}
 //extension Continent : Content{}
 
