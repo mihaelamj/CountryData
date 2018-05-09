@@ -51,8 +51,14 @@ public func configureSQLite(
   Continent<SQLiteDatabase>.defaultDatabase = .sqlite
   Country<SQLiteDatabase>.defaultDatabase = .sqlite
   
+  Form<SQLiteDatabase>.defaultDatabase = .sqlite
+  Heat<SQLiteDatabase>.defaultDatabase = .sqlite
+  
   migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
+  
+  migrations.add(migration: FormMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: HeatMigration<SQLiteDatabase>.self, database: .sqlite)
   
   services.register(migrations)
   
