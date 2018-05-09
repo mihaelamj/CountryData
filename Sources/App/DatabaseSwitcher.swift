@@ -60,17 +60,22 @@ extension MigrationConfig {
 import Vapor
 import Routing
 
-extension Router {
+public func addVaporCountriesRoutes<D>(for database: DatabaseIdentifier<D>, router: Router) throws where D: QuerySupporting & IndexSupporting & ReferenceSupporting {
+  let continetsController = ContinentsController<D>()
+  try router.register(collection: continetsController)
   
-  public func addVaporCountriesRoutes<D>(for database: DatabaseIdentifier<D>) throws where D: QuerySupporting & IndexSupporting & ReferenceSupporting {
-    
+  let countriesController = CountriesController<D>()
+  try router.register(collection: countriesController)
+}
+
+public extension Router {
+  
+  public func addVaporCountriesRoutesDoesNotWork<D>(for database: DatabaseIdentifier<D>) throws where D: QuerySupporting & IndexSupporting & ReferenceSupporting {
     let continetsController = ContinentsController<D>()
-    //Use of unresolved identifier 'router'
     try self.register(collection: continetsController)
     
-    let cuntriesController = CountriesController<D>()
-    //Use of unresolved identifier 'router'
-    try self.register(collection: cuntriesController)
+    let countriesController = CountriesController<D>()
+    try self.register(collection: countriesController)
   }
 }
 
