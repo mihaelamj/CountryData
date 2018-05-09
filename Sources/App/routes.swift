@@ -6,10 +6,13 @@ import Vapor
 /// [Learn More →](https://docs.vapor.codes/3.0/getting-started/structure/#routesswift)
 public func routes(_ router: Router) throws {
 
-  let continetsController = ContinentsController1()
-  try router.register(collection: continetsController)
+  let continetsController1 = ContinentsController1()
+  try router.register(collection: continetsController1)
   
-  let countriesController = CountriesController1()
-  try router.register(collection: countriesController)
+  let countriesController1 = CountriesController1()
+  try router.register(collection: countriesController1)
+  
+//  let continetsController = ContinentsController()
+//  try router.register(collection: countriesController)
 
 }
