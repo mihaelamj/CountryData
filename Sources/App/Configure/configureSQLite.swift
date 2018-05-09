@@ -51,11 +51,11 @@ public func configureSQLite(
   migrations.addVaporSpices(for: .sqlite)
   
   //Countries
-//  Continent<SQLiteDatabase>.defaultDatabase = .sqlite
-//  Country<SQLiteDatabase>.defaultDatabase = .sqlite
-//  migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
-//  migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
-//  
+  Continent<SQLiteDatabase>.defaultDatabase = .sqlite
+  Country<SQLiteDatabase>.defaultDatabase = .sqlite
+  migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
+//
 //  //Spices
 //  Form<SQLiteDatabase>.defaultDatabase = .sqlite
 //  Heat<SQLiteDatabase>.defaultDatabase = .sqlite
