@@ -47,32 +47,35 @@ public func configureSQLite(
   /// Configure migrations
   var migrations = MigrationConfig()
   
-  //test SQLite
-  Continent<SQLiteDatabase>.defaultDatabase = .sqlite
-  Country<SQLiteDatabase>.defaultDatabase = .sqlite
+  migrations.addVaporCountries(for: .sqlite)
+  migrations.addVaporSpices(for: .sqlite)
   
-  Form<SQLiteDatabase>.defaultDatabase = .sqlite
-  Heat<SQLiteDatabase>.defaultDatabase = .sqlite
-  Technique<SQLiteDatabase>.defaultDatabase = .sqlite
-  Season<SQLiteDatabase>.defaultDatabase = .sqlite
-  Volume<SQLiteDatabase>.defaultDatabase = .sqlite
-  Weight<SQLiteDatabase>.defaultDatabase = .sqlite
-  Type<SQLiteDatabase>.defaultDatabase = .sqlite
-  Function<SQLiteDatabase>.defaultDatabase = .sqlite
-  Taste<SQLiteDatabase>.defaultDatabase = .sqlite
-  
-  migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
-  
-  migrations.add(migration: FormMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: HeatMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: TechniqueMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: SeasonMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: VolumeMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: WeightMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: TypeMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: FunctionMigration<SQLiteDatabase>.self, database: .sqlite)
-  migrations.add(migration: TasteMigration<SQLiteDatabase>.self, database: .sqlite)
+  //Countries
+//  Continent<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Country<SQLiteDatabase>.defaultDatabase = .sqlite
+//  migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
+//  
+//  //Spices
+//  Form<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Heat<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Technique<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Season<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Volume<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Weight<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Type<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Function<SQLiteDatabase>.defaultDatabase = .sqlite
+//  Taste<SQLiteDatabase>.defaultDatabase = .sqlite
+//
+//  migrations.add(migration: FormMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: HeatMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: TechniqueMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: SeasonMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: VolumeMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: WeightMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: TypeMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: FunctionMigration<SQLiteDatabase>.self, database: .sqlite)
+//  migrations.add(migration: TasteMigration<SQLiteDatabase>.self, database: .sqlite)
   
   services.register(migrations)
   
