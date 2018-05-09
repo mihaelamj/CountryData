@@ -31,10 +31,19 @@ public final class CountriesController<D>: RouteCollection where D: QuerySupport
     return try req.parameters.next(Country<D>.self)
   }
   
+  //MARK: Parent Handler -
+  
   func getContinentHandler(_ req: Request) throws -> Future<Continent<D>> {
     return try req.parameters.next(Country<D>.self).flatMap(to: Continent<D>.self) { country in
       return try country.continent!.get(on: req)
     }
+  }
+  
+  //MARK: Paginated Handlers -
+  
+  //GET http://localhost:8080/api/countries?limit=20&page=1
+  func getAllPaginatedHandler(_ req: Request) throws -> Future<[Country<D>]> {
+    return try Country<D>.query(on: req).paginate(on: req).all()
   }
   
 }

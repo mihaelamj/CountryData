@@ -31,6 +31,8 @@ public final class ContinentsController<D>: RouteCollection where D: QuerySuppor
     return try req.parameters.next(Continent<D>.self)
   }
   
+  //MARK: Children Handler -
+  
   func getCountriesHandler(_ req: Request) throws -> Future<[Country<D>]> {
     return try req.parameters.next(Continent<Database>.self).flatMap(to: [Country<D>].self) { continent in
       return try continent.countries.query(on: req).all()
