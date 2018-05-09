@@ -20,10 +20,10 @@ public typealias ContinentSQLite = Continent<SQLiteDatabase>
 //protocol conformances
 extension Country : Parameter{}
 extension Country : Content{}
-extension Continent : Parameter{}
-extension Continent : Content{}
+//extension Continent : Parameter{}
+//extension Continent : Content{}
 
-struct CountriesController: RouteCollection {
+struct CountriesController1: RouteCollection {
   
   func boot(router: Router) throws {
     let aRoute = router.grouped("api", "countries")
@@ -47,7 +47,6 @@ struct CountriesController: RouteCollection {
     return try CountrySQLite.query(on: req).paginate(on: req).all()
   }
   
-  
   func getOneHandler(_ req: Request) throws -> Future<CountrySQLite> {
     return try req.parameters.next(Country.self)
   }
@@ -60,7 +59,7 @@ struct CountriesController: RouteCollection {
   
 }
 
-struct ContinentsController: RouteCollection {
+struct ContinentsController1: RouteCollection {
   
   func boot(router: Router) throws {
     let aRoute = router.grouped("api", "continets")
