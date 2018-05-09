@@ -57,6 +57,7 @@ public func configureSQLite(
   Volume<SQLiteDatabase>.defaultDatabase = .sqlite
   Weight<SQLiteDatabase>.defaultDatabase = .sqlite
   Type<SQLiteDatabase>.defaultDatabase = .sqlite
+  Function<SQLiteDatabase>.defaultDatabase = .sqlite
   
   migrations.add(migration: ContinentMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: CountryMigration<SQLiteDatabase>.self, database: .sqlite)
@@ -67,6 +68,7 @@ public func configureSQLite(
   migrations.add(migration: VolumeMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: WeightMigration<SQLiteDatabase>.self, database: .sqlite)
   migrations.add(migration: TypeMigration<SQLiteDatabase>.self, database: .sqlite)
+  migrations.add(migration: FunctionMigration<SQLiteDatabase>.self, database: .sqlite)
   
   services.register(migrations)
   
