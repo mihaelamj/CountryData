@@ -7,6 +7,11 @@
 
 import Foundation
 
+//FIXME: This is a dirty hack to make Pivot fields unique, because (as far as I know) there is no way to make an idex on 2 fields.
+func makeUnitedID(int1: Int, int2: Int) -> String {
+  return "\(String(int1))|\(String(int2))"
+}
+
 public typealias TasteTouple = (name: String, desc: String, tastes: [String])
 
 public typealias TasteDictionary = [String: Int]

@@ -37,14 +37,18 @@ public final class TasteActionPivot<D>: ModifiablePivot where D: QuerySupporting
   /// The action's id
   var actionID: Int
   
+  //FIXME: This is a dirty hack to make Pivot fields unique, because (as far as I know) there is no way to make an idex on 2 fields.
+  var pivotIDString : String
+  
   public init(_ left: TasteActionPivot<D>.Left, _ right: TasteActionPivot<D>.Right) throws {
     tasteID = try left.requireID()
     actionID = try right.requireID()
+    pivotIDString = makeUnitedID(int1: tasteID, int2: actionID)
   }
 
 }
 
-//extension TasteActionPivot<D>: Migration where D: QuerySupporting, D: IndexSupporting, D: ReferenceSupporting { }
+extension TasteActionPivot: Migration where D: QuerySupporting, D: IndexSupporting, D: ReferenceSupporting { }
 
 public struct TasteActionPivotMigration<D>: Migration where D: QuerySupporting & SchemaSupporting & IndexSupporting & ReferenceSupporting {
   
@@ -59,9 +63,12 @@ public struct TasteActionPivotMigration<D>: Migration where D: QuerySupporting &
       try builder.field(for: \TasteActionPivot<Database>.id)
       try builder.field(for: \TasteActionPivot<Database>.tasteID)
       try builder.field(for: \TasteActionPivot<Database>.actionID)
+      //FIXME: remove this when I figure out how to make a composite index
+      try builder.field(for: \TasteActionPivot<Database>.pivotIDString)
       
       //indexes
-//      try builder.addIndex(to: \.name, isUnique: true)
+      //FIXME: remove this when I figure out how to make a composite index
+      try builder.addIndex(to: \.pivotIDString, isUnique: true)
       
       //referential integrity - foreign key to Taste
       try builder.addReference(from: \TasteActionPivot<D>.tasteID, to: \Taste<D>.id, actions: .init(update: .update, delete: .nullify))
@@ -81,7 +88,5 @@ public struct TasteActionPivotMigration<D>: Migration where D: QuerySupporting &
   public static func revert(on connection: D.Connection) -> EventLoopFuture<Void> {
     return Database.delete(TasteActionPivot.self, on: connection)
   }
-  
-  
 
 }
