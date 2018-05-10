@@ -43,6 +43,7 @@ public final class TasteActionPivot<D>: ModifiablePivot where D: QuerySupporting
   public init(_ left: TasteActionPivot<D>.Left, _ right: TasteActionPivot<D>.Right) throws {
     tasteID = try left.requireID()
     actionID = try right.requireID()
+    //FIXME: remove this when I figure out how to make a composite index
     pivotIDString = makeUnitedID(int1: tasteID, int2: actionID)
   }
 
@@ -77,10 +78,11 @@ public struct TasteActionPivotMigration<D>: Migration where D: QuerySupporting &
     }
   }
 
+//MARK: - Required
   
   public static func prepare(on connection: D.Connection) -> EventLoopFuture<Void> {
     let futureCreateFields = prepareFields(on: connection)
-//    let futureInsertData = prepareAddCountries(on: connection)
+//    let futureInsertData = prepareAddData(on: connection)
     let allFutures : [EventLoopFuture<Void>] = [futureCreateFields]
     return Future<Void>.andAll(allFutures, eventLoop: connection.eventLoop)
   }
