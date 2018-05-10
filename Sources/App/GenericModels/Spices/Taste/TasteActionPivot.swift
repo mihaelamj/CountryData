@@ -3,7 +3,7 @@ import Fluent
 import Foundation
 
 /// A pivot between taste and action.
-public final class TasteActionPivot<D>: ModifiablePivot where D: QuerySupporting {
+public final class TasteActionPivot<D>: ModifiablePivot where D: QuerySupporting & IndexSupporting  {
  
   public typealias Database = D
   public typealias ID = Int
@@ -37,9 +37,19 @@ public final class TasteActionPivot<D>: ModifiablePivot where D: QuerySupporting
   /// The action's id
   var actionID: Int
   
-  public init(_ taste: Taste<Database>, _ action: TasteAction<Database>) throws {
-    tasteID = try taste.requireID()
-    actionID = try action.requireID()
+//  public init(_ taste: Taste<Database>, _ action: TasteAction<Database>) throws {
+//    tasteID = try taste.requireID()
+//    actionID = try action.requireID()
+//  }
+  
+  //  public init(_ left: Taste<D>, _ right: TasteAction<D>) throws {
+  //    tasteID = try taste.requireID()
+  //    actionID = try action.requireID()
+  //  }
+  
+  public init(_ left: TasteActionPivot<D>.Left, _ right: TasteActionPivot<D>.Right) throws {
+    tasteID = try left.requireID()
+    actionID = try right.requireID()
   }
 
 }

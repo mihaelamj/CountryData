@@ -38,20 +38,20 @@ public final class TastesOldController<D>: RouteCollection where D: QuerySupport
   public typealias TasteDictionary = [String: Int]
   
   
-  func getAllTastes1(_ req: Request) throws -> Future<TasteDictionary> {
-    do {
-      return try TasteOld<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
-        var dic : TasteDictionary = [:]
-        tastes.forEach({ taste in
-          dic[taste.name] = taste.id
-        })
-        debugPrint("dic: \(dic)")
-        return dic
-      }
-    } catch {
-      return req.eventLoop.newFailedFuture(error: error)
-    }
-  }
+//  func getAllTastes1(_ req: Request) throws -> Future<TasteDictionary> {
+//    do {
+//      return try TasteOld<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
+//        var dic : TasteDictionary = [:]
+//        tastes.forEach({ taste in
+//          dic[taste.name] = taste.id
+//        })
+//        debugPrint("dic: \(dic)")
+//        return dic
+//      }
+//    } catch {
+//      return req.eventLoop.newFailedFuture(error: error)
+//    }
+//  }
   
   func getAllTastes(_ req: Request) throws -> Future<TasteDictionary> {
     return Taste<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
