@@ -28,9 +28,25 @@ public final class Taste<D>: Model where D: QuerySupporting, D: IndexSupporting 
     self.name = name
     self.description = description
   }
+  
+//MARK: - Public Helper
+  
+  public static func getAllTastes(on connection: Database.Connection) throws -> Future<TasteDictionary> {
+    return Taste<D>.query(on: connection).all().map(to: TasteDictionary.self) { tastes in
+      var dic : TasteDictionary = [:]
+      tastes.forEach({ taste in
+        dic[taste.name] = taste.id
+      })
+      debugPrint("dic: \(dic)")
+      return dic
+    }
+  }
+  
 }
 
 extension Taste: Migration where D: QuerySupporting, D: IndexSupporting { }
+
+
 
 //MARK: - Populating data
 

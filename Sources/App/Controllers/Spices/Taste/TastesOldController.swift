@@ -53,15 +53,15 @@ public final class TastesOldController<D>: RouteCollection where D: QuerySupport
 //    }
 //  }
   
-  func getAllTastes(_ req: Request) throws -> Future<TasteDictionary> {
-    return Taste<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
-      var dic : TasteDictionary = [:]
-      tastes.forEach({ taste in
-        dic[taste.name] = taste.id
-      })
-      debugPrint("dic: \(dic)")
-      return dic
-    }
-  }
+//  func getAllTastes(_ req: Request) throws -> Future<TasteDictionary> {
+//    return Taste<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
+//      var dic : TasteDictionary = [:]
+//      tastes.forEach({ taste in
+//        dic[taste.name] = taste.id
+//      })
+//      debugPrint("dic: \(dic)")
+//      return dic
+//    }
+//  }
   
 }
