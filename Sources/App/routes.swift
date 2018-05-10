@@ -20,5 +20,7 @@ public func routes(_ router: Router) throws {
 //  addVaporCountriesRoutes(for: .sqlite)
   
   try addVaporCountriesRoutes(for: .sqlite, router: router)
+  
+  try addVaporSpicesRoutes(for: .sqlite, router: router)
 
 }

@@ -68,16 +68,21 @@ public func addVaporCountriesRoutes<D>(for database: DatabaseIdentifier<D>, rout
   try router.register(collection: countriesController)
 }
 
-public extension Router {
-  
-  public func addVaporCountriesRoutesDoesNotWork<D>(for database: DatabaseIdentifier<D>) throws where D: QuerySupporting & IndexSupporting & ReferenceSupporting {
-    let continetsController = ContinentsController<D>()
-    try self.register(collection: continetsController)
-    
-    let countriesController = CountriesController<D>()
-    try self.register(collection: countriesController)
-  }
+public func addVaporSpicesRoutes<D>(for database: DatabaseIdentifier<D>, router: Router) throws where D: QuerySupporting & IndexSupporting & ReferenceSupporting {
+  let tastesController = TastesController<D>()
+  try router.register(collection: tastesController)
 }
+
+//public extension Router {
+//
+//  public func addVaporCountriesRoutesDoesNotWork<D>(for database: DatabaseIdentifier<D>) throws where D: QuerySupporting & IndexSupporting & ReferenceSupporting {
+//    let continetsController = ContinentsController<D>()
+//    try self.register(collection: continetsController)
+//
+//    let countriesController = CountriesController<D>()
+//    try self.register(collection: countriesController)
+//  }
+//}
 
 //let continetsController = ContinentsController()
 //try router.register(collection: countriesController)
