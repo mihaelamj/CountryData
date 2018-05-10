@@ -18,7 +18,7 @@ public final class TastesController<D>: RouteCollection where D: QuerySupporting
     aRoute.get(Taste<D>.parameter as PathComponentsRepresentable, use: getOneHandler)
     
     //GET /api/tastes/test
-    aRoute.get("test", use: getAllTastes)
+//    aRoute.get("test", use: getAllTastes)
   }
   
   //MARK: Handlers -
@@ -31,25 +31,14 @@ public final class TastesController<D>: RouteCollection where D: QuerySupporting
     return try req.parameters.next(Taste<D>.self)
   }
   
-  func testHandler(_ req: Request) throws -> Future<[Taste<D>]> {
-    return try Taste<D>.query(on: req).all()
-  }
+//  func testHandler(_ req: Request) throws -> Future<[Taste<D>]> {
+//    return try Taste<D>.query(on: req).all()
+//  }
   
   public typealias TasteDictionary = [String: Int]
   
-  func testHandler1(_ req: Request) throws -> Future<[TasteDictionary]> {
-    return try Taste<D>.query(on: req).all().map(to: [TasteDictionary].self) { tastes in
-      var dic : TasteDictionary = [:]
-      var arr = [TasteDictionary]()
-      
-      tastes.forEach({ taste in
-        dic[taste.name] = taste.id
-      })
-      return arr
-    }
-  }
   
-  func getAllTastes(_ req: Request) throws -> Future<TasteDictionary> {
+  func getAllTastes1(_ req: Request) throws -> Future<TasteDictionary> {
     do {
       return try Taste<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
         var dic : TasteDictionary = [:]
@@ -60,7 +49,18 @@ public final class TastesController<D>: RouteCollection where D: QuerySupporting
         return dic
       }
     } catch {
-      return connection.eventLoop.newFailedFuture(error: error)
+      return req.eventLoop.newFailedFuture(error: error)
+    }
+  }
+  
+  func getAllTastes(_ req: Request) throws -> Future<TasteDictionary> {
+    return Taste<D>.query(on: req).all().map(to: TasteDictionary.self) { tastes in
+      var dic : TasteDictionary = [:]
+      tastes.forEach({ taste in
+        dic[taste.name] = taste.id
+      })
+      debugPrint("dic: \(dic)")
+      return dic
     }
   }
   

@@ -39,33 +39,7 @@ extension Taste: Migration where D: QuerySupporting, D: IndexSupporting { }
 
 //MARK: - Populating data
 
-let tastes : [(String, String, String, String)] = [
-  
-  ("sweet",
-   "Sweet taste as in honey, mango.",
-   "Builds tissues, calms nerves.",
-   "Fruit, grains, natural sugars, milk."),
-  
-  ("salty",
-   "Salty as anchovies.",
-   "Improves taste to food, lubricates tissues, stimulates digestion.",
-   "Natural salts, sea vegetables."),
-  
-  ("sour",
-   "The sour taste comes from higher acidic foods such as citrus, which includes lemons or limes. The sour taste is caused by a hydrogen atom, or ions. The more atoms present in a food, the more sour it will taste.",
-   "Cleanses tissues, increases absorption of minerals.",
-   "Sour fruits, yogurt, fermented foods."),
-  
-  ("bitter",
-   "Bitterness can be described as a sharp, pungent, or disagreeable flavor. Bitterness is neither salty nor sour, but may at times accompany these flavor sensations.",
-   "Detoxifies and lightens tissues.",
-   "Dark leafy greens, herbs and spices."),
-  
-  ("umami",
-   "Savory, and characteristic of broths and cooked meats. The sensation of umami is due to the detection of the carboxylate anion of glutamate in specialized receptor cells present on the human and other animal tongues. (The taste of monosodium glutamate, commonly found in Chinese takeaways)",
-   "Satiating.",
-   "Fish, shellfish, cured meats, mushrooms, vegetables (e.g., ripe tomatoes, Chinese cabbage, spinach, celery, etc.) or green tea, and fermented and aged products involving bacterial or yeast cultures, such as cheeses, shrimp pastes, fish sauce, soy sauce, nutritional yeast, and yeast extracts.")
-]
+
 
 public struct TasteMigration<D>: Migration where D: QuerySupporting & SchemaSupporting & IndexSupporting {
   public typealias Database = D
