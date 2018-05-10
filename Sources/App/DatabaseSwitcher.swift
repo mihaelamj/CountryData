@@ -52,8 +52,8 @@ extension MigrationConfig {
     Heat<D>.defaultDatabase = database
     self.add(migration: HeatMigration<D>.self, database: database)
     
-    Taste<D>.defaultDatabase = database
-    self.add(migration: TasteMigration<D>.self, database: database)
+//    Taste<D>.defaultDatabase = database
+//    self.add(migration: TasteMigration<D>.self, database: database)
   }
 }
 

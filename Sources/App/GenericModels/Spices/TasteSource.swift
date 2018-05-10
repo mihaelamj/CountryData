@@ -7,10 +7,10 @@ public final class TasteSource<D>: Model where D: QuerySupporting, D: IndexSuppo
   public typealias ID = Int
   public static var idKey: IDKey { return \.id }
   public static var entity: String {
-    return "tastesource"
+    return "taste-source"
   }
   public static var database: DatabaseIdentifier<D> {
-    return .init("tastesource")
+    return .init("taste-source")
   }
   
   var id: Int?
