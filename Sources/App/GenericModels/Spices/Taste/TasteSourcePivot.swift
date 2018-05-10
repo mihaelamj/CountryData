@@ -37,16 +37,6 @@ public final class TasteSourcePivot<D>: ModifiablePivot where D: QuerySupporting
   /// The source'es id
   var sourceID: Int
   
-//  public init(_ left: Taste<D>, _ right: TasteSource<D>) throws {
-//    tasteID = try taste.requireID()
-//    sourceID = try source.requireID()
-//  }
-  
-//  public init(_ taste: Taste<Database>, _ source: TasteAction<Database>) throws {
-//    tasteID = try taste.requireID()
-//    sourceID = try source.requireID()
-//  }
-  
   public init(_ left: TasteSourcePivot<D>.Left, _ right: TasteSourcePivot<D>.Right) throws {
     tasteID = try left.requireID()
     sourceID = try right.requireID()
