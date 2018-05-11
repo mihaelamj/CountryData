@@ -82,6 +82,8 @@ public struct TasteActionMigration<D>: Migration where D: QuerySupporting & Sche
     
     let tastes = try Taste<D>.getAllTastes(on: connection) //returns TasteDictionary [String : Int]
     
+    let tasteObjects = try Taste<D>.query(on: connection).all()
+    
     // add -> Future<(TasteAction<D>, [String])> if the compiler complains
     
     //iterate tasteActions array of touples and create TasteAction entities
@@ -107,6 +109,28 @@ public struct TasteActionMigration<D>: Migration where D: QuerySupporting & Sche
         .flatten(on: connection)
         .transform(to: tasteDict)
       }.transform(to: ())
+  }
+  
+  static func addActions2(on connection: Database.Connection) throws -> Future<Void>  {
+    
+    //1. fetch all tastes
+    let tasteObjects = Taste<D>.query(on: connection).all()
+    
+    //2. make actions
+    //with (name: "builds-tissues", desc: "Help build and maintain body cells and tissues.", tastes: ["sweet"]),
+    let actions = tasteActions.map { (name, desc, tasteNames) in
+      TasteAction<D>(name: name, description: desc)
+        .create(on: connection)
+        .map { ($0, tastes) }
+    }
+    
+    //3. After
+    return tasteObjects.fold(actions) { (tasteDict, tuple) in
+      
+    }
+    .transform(to: ())
+    
+    
   }
   
   /*When I'm doing complex futures interactions I usually write out all types transformations.
