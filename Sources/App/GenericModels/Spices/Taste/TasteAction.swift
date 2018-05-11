@@ -51,7 +51,7 @@ public struct TasteActionMigration<D>: Migration where D: QuerySupporting & Sche
   
   //MARK: - Helpers
   
-  static func addActions(on connection: Database.Connection) throws -> Future<Void>  {
+  static func addActions1(on connection: Database.Connection) throws -> Future<Void>  {
     
     return try Taste<D>.getAllTastes(on: connection).flatMap(to: Void.self) { tasteDict in
       
@@ -77,6 +77,52 @@ public struct TasteActionMigration<D>: Migration where D: QuerySupporting & Sche
       
     }
   }
+  
+  static func addActions(on connection: Database.Connection) throws -> Future<Void>  {
+    
+    let tastes = try Taste<D>.getAllTastes(on: connection) //returns TasteDictionary [String : Int]
+    
+    // add -> Future<(TasteAction<D>, [String])> if the compiler complains
+    
+    //iterate tasteActions array of touples and create TasteAction entities
+    let actions = tasteActions.map { (name, desc, tastes) in
+      TasteAction<D>(name: name, description: desc)
+        .create(on: connection)
+        .map { ($0, tastes) }
+    }
+    
+    return tastes.fold(actions) { (tasteDict, tuple) in
+      
+      let (action, tastes) = tuple
+      
+      return tastes.map { taste in
+        //Taste.ID, TasteAction.ID
+        let tasteID : Taste<Database>.ID = tasteDict[taste]!
+        let tasteActionID = action.id
+        //Cannot convert value of type 'Taste.ID' (aka 'Int')
+        //to expected argument type 'Taste<_>'
+        TasteActionPivot<D>(tasteID, tasteActionID)
+          .create(on: connection)
+        }
+        .flatten(on: connection)
+        .transform(to: tasteDict)
+      }.transform(to: ())
+  }
+  
+  /*When I'm doing complex futures interactions I usually write out all types transformations.
+   In most cases it simplifies the task very well.
+   So as for your example, if I understand right, it would be:
+   
+  Future<TasteDict>, [Future<TasteActionTuple>]  * ? -> TasteDict, TasteActionTuple
+   
+  Then choose appropriate operators for conversions. And as we know in-out types we can even lookup operators by types.
+  so to solve the transformation Future<A>, [Future<B>] -> A, B we can do
+  - future<A> * fold( [future<B>] ) -> A, B
+  - future<A> * flatMap -> A
+  [future<B>] * flatten -> [B]
+  And as last resort we can always go out of future pipe with do, then return back with newPromise/futureResult,
+   i.e. if we have to deal with callback types of async :smiley:(edited)*
+   */
   
   /*
    extension Staff : Migration {

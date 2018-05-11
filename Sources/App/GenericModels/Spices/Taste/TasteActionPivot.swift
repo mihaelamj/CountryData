@@ -68,6 +68,8 @@ public struct TasteActionPivotMigration<D>: Migration where D: QuerySupporting &
       try builder.field(for: \TasteActionPivot<Database>.pivotIDString)
       
       //indexes
+      try builder.addIndex(to: \.tasteID, \.actionID, isUnique: true)
+      
       //FIXME: remove this when I figure out how to make a composite index
       try builder.addIndex(to: \.pivotIDString, isUnique: true)
       
